@@ -10,74 +10,12 @@ from tensorflow.keras.models import load_model
 PWMA = 18
 AIN1 = 22
 AIN2 = 27
-
+line_pin_right = 19
+line_pin_middle = 16
+line_pin_left = 20
 PWMB = 23
 BIN1 = 25
 BIN2 = 24
-
-
-def motor_back(speed):
-    L_Motor.ChangeDutyCycle(speed)
-    GPIO.output(AIN2, False)  # AIN2
-    GPIO.output(AIN1, True)  # AIN1
-    R_Motor.ChangeDutyCycle(speed)
-    GPIO.output(BIN2, False)  # BIN2
-    GPIO.output(BIN1, True)  # BIN1
-
-
-def motor_go(speed):
-    L_Motor.ChangeDutyCycle(speed)
-    GPIO.output(AIN2, True)  # AIN2
-    GPIO.output(AIN1, False)  # AIN1
-    R_Motor.ChangeDutyCycle(speed)
-    GPIO.output(BIN2, True)  # BIN2
-    GPIO.output(BIN1, False)  # BIN1
-
-
-def motor_stop():
-    L_Motor.ChangeDutyCycle(0)
-    GPIO.output(AIN2, False)  # AIN2
-    GPIO.output(AIN1, False)  # AIN1
-    R_Motor.ChangeDutyCycle(0)
-    GPIO.output(BIN2, False)  # BIN2
-    GPIO.output(BIN1, False)  # BIN1
-
-
-def motor_right(speed):
-    L_Motor.ChangeDutyCycle(speed)
-    GPIO.output(AIN2, True)  # AIN2
-    GPIO.output(AIN1, False)  # AIN1
-    R_Motor.ChangeDutyCycle(0)
-    GPIO.output(BIN2, False)  # BIN2
-    GPIO.output(BIN1, True)  # BIN1
-
-
-def motor_left(speed):
-    L_Motor.ChangeDutyCycle(0)
-    GPIO.output(AIN2, False)  # AIN2
-    GPIO.output(AIN1, True)  # AIN1
-    R_Motor.ChangeDutyCycle(speed)
-    GPIO.output(BIN2, True)  # BIN2
-    GPIO.output(BIN1, False)  # BIN1
-
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(AIN2, GPIO.OUT)
-GPIO.setup(AIN1, GPIO.OUT)
-GPIO.setup(PWMA, GPIO.OUT)
-
-GPIO.setup(BIN1, GPIO.OUT)
-GPIO.setup(BIN2, GPIO.OUT)
-GPIO.setup(PWMB, GPIO.OUT)
-
-L_Motor = GPIO.PWM(PWMA, 100)
-L_Motor.start(0)
-
-R_Motor = GPIO.PWM(PWMB, 100)
-R_Motor.start(0)
-
-speedSet = 40
 
 
 def img_preprocess(image):
@@ -100,12 +38,11 @@ camera.set(4, 480)
 #     model_path = '/home/pi/AI_CAR/model/lane_navigation_final.h5'
 #     model = load_model(model_path)
 ##model 설정
-#     carState = "stop"
+#     whatspare = "None"
 #
 #     try:
 #         while True:
 #             keyValue = cv2.waitKey(1) #키보드 입력대기
-#
 #
 #             _, image = camera.read()
 #             image = cv2.flip(image, -1)
@@ -119,8 +56,9 @@ camera.set(4, 480)
 #             if whatspare == "nozzle":
 #                 print("nozzle") # GUI로 보내기
 #             elif whatspare == "pump":
+#                 print("pump") # GUI로 보내기
 #             else :
-#                   print("unknown")
+#                 print("unknown")
 #
 #     except KeyboardInterrupt:
 #         pass
@@ -130,16 +68,17 @@ camera.set(4, 480)
 def setup():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(line_pin_right,GPIO.IN)
-    GPIO.setup(line_pin_middle,GPIO.IN)
-    GPIO.setup(line_pin_left,GPIO.IN)
-    #motor.setup()
+    GPIO.setup(line_pin_right, GPIO.IN)
+    GPIO.setup(line_pin_middle, GPIO.IN)
+    GPIO.setup(line_pin_left, GPIO.IN)
+    # motor.setup()
+
 
 def run():
     status_right = GPIO.input(line_pin_right)
     status_middle = GPIO.input(line_pin_middle)
     status_left = GPIO.input(line_pin_left)
-    #print('R%d   M%d   L%d'%(status_right,status_middle,status_left))
+    # print('R%d   M%d   L%d'%(status_right,status_middle,status_left))
     if status_middle == 1:
         move.move(100, 'forward', 'no', 1)
     elif status_left == 1:
@@ -148,6 +87,8 @@ def run():
         move.move(100, 'forward', 'left', 0.6)
     else:
         move.move(100, 'backward', 'no', 1)
+
+
 # 여기까지 Tracking line
 
 if __name__ == '__main__':

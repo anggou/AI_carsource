@@ -79,14 +79,14 @@ def run():
     status_middle = GPIO.input(line_pin_middle)
     status_left = GPIO.input(line_pin_left)
     # print('R%d   M%d   L%d'%(status_right,status_middle,status_left))
-    if status_middle == 1:
-        move.move(100, 'forward', 'no', 1)
-    elif status_left == 1:
-        move.move(100, 'forward', 'right', 0.6)
+    if status_middle == 0 and status_left == 0 and status_right == 0:
+        move.move(50, 'forward', 'no', 1)
     elif status_right == 1:
-        move.move(100, 'forward', 'left', 0.6)
+        move.move(50, 'forward', 'right', 0.6)
+    elif status_left == 1:
+        move.move(50, 'forward', 'left', 0.6)
     else:
-        move.move(100, 'backward', 'no', 1)
+        move.move(50, 'backward', 'no', 1)
 
 
 # 여기까지 Tracking line
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         while 1:
             run()
         pass
-    except KeyboardInterrupt:
+    except KeyboardInterrupt: #(ctrl+c 종료)
         move.destroy()
 
     # cv2.destroyAllWindows()

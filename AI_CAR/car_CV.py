@@ -47,8 +47,10 @@ def spare_capture():
             whatspare = int(model.predict(X)[0])
             print("spare is:", whatspare)
 
-            if whatspare == "nozzle_1":
-                print("Nozzle 1pcs") # GUI로 보내기
+            if whatspare == "empty":
+                print("empty") # GUI로 보내기
+            elif whatspare == "nozzle_1":
+                print("Nozzle 1pcs")  # GUI로 보내기
             elif whatspare == "nozzle_2":
                 print("Nozzle 2pcs") # GUI로 보내기
             elif whatspare == "nozzle_3":

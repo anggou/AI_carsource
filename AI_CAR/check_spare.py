@@ -5,10 +5,11 @@ import cv2
 model = tensorflow.keras.models.load_model('keras_model.h5')  # file 집어넣기
 cap = cv2.VideoCapture(0)
 size = (224, 224)
-classes = ['nozzle_1', 'nozzle_1', 'nozzle_1', 'pump_1', 'pump_2', 'pump_3']
+classes = ['empty', 'nozzle_1', 'nozzle_1', 'nozzle_1', 'pump_1', 'pump_2', 'pump_3']
+
 
 def Check_spare():
-    while cap.isOpened(): #초기화
+    while cap.isOpened():  # 초기화
         ret, img = cap.read()
         if not ret:
             break
@@ -32,6 +33,7 @@ def Check_spare():
         cv2.imshow('result', img)
         if cv2.waitKey(1) == ord('q'):
             break
+
 
 if __name__ == '__main__':
     Check_spare()

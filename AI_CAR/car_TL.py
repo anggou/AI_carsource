@@ -7,19 +7,12 @@ import tensorflow as tf
 import move
 from tensorflow.keras.models import load_model
 
-PWMA = 18
-AIN1 = 22
-AIN2 = 27
 line_pin_right = 19
 line_pin_middle = 16
 line_pin_left = 20
 status_right = GPIO.input(line_pin_right)
 status_middle = GPIO.input(line_pin_middle)
 status_left = GPIO.input(line_pin_left
-PWMB = 23
-BIN1 = 25
-BIN2 = 24
-
 
 def img_preprocess(image):
     height, _, _ = image.shape
@@ -48,10 +41,9 @@ def spare_capture():
             keyValue = cv2.waitKey(1) #키보드 입력대기
 
             _, image = camera.read() #_은 읽기 성공여부, true or false
-            image = cv2.flip(image, -1) # 양수 = 좌우대칭, 0 = 상하대칭 , 음수 = 모두수행
-            preprocessed = img_preprocess(image)
-            cv2.imshow('pre', preprocessed) # 'pre' = 창제목 으로 창 띄워 보여주기
-            X = np.asarray([preprocessed])
+            # image = cv2.flip(image, -1) # 양수 = 좌우대칭, 0 = 상하대칭 , 음수 = 모두수행
+            cv2.imshow('pre', image) # 'pre' = 창제목 으로 창 띄워 보여주기
+            X = np.asarray([preprocessed]) # 전처리 여부 확인
             whatspare = int(model.predict(X)[0])
             print("spare is:", whatspare)
 

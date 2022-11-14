@@ -11,6 +11,7 @@ classes = ['empty', 'nozzle_1', 'nozzle_1', 'nozzle_1', 'pump_1', 'pump_2', 'pum
 def Check_spare():
     while cap.isOpened():  # 초기화
         ret, img = cap.read()
+
         if not ret:
             break
 

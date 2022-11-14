@@ -14,6 +14,11 @@ status_right = GPIO.input(line_pin_right)
 status_middle = GPIO.input(line_pin_middle)
 status_left = GPIO.input(line_pin_left
 
+model = tensorflow.keras.models.load_model('keras_model.h5')  # file 집어넣기
+cap = cv2.VideoCapture(0)
+size = (224, 224)
+classes = ['empty', 'nozzle_1', 'nozzle_1', 'nozzle_1', 'pump_1', 'pump_2', 'pump_3']
+
 def img_preprocess(image):
     height, _, _ = image.shape
     image = image[int(height / 2):, :, :]
@@ -25,10 +30,6 @@ def img_preprocess(image):
     return image
 
 
-camera = cv2.VideoCapture(-1)
-camera.set(3, 640)
-camera.set(4, 480)
-
 def spare_capture():
     model_path = '/home/pi/AI_CAR/model/lane_navigation_final.h5'
     model = load_model(model_path)
@@ -37,12 +38,21 @@ def spare_capture():
 
     try:
         # keyValue = cv2.waitKey(1) #키보드 입력대기
-        _, image = camera.read() #_은 읽기 성공여부, true or false
-        image = cv2.flip(image, -1) # 양수 = 좌우대칭, 0 = 상하대칭 , 음수 = 모두수행
-        preprocessed = img_preprocess(image)
-        cv2.imshow('pre', preprocessed) # 'pre' = 창제목 으로 창 띄워 보여주기
-        X = np.asarray([preprocessed])
-        whatspare = int(model.predict(X)[0])
+        ret, img = cap.read()
+        h, w, _ = img.shape
+        cx = h / 2
+        img = img[:, 200:200 + img.shape[0]]
+        img = cv2.flip(img, 1)
+
+        img_input = cv2.resize(img, size)
+        img_input = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
+        img_input = (img_input.astype(np.float32) / 127.0) - 1
+        img_input = np.expand_dims(img_input, axis=0)
+        cv2.imshow('pre', img_input) # 'pre' = 창제목 으로 창 띄워 보여주기
+        prediction = model.predict(img_input)
+        idx = np.argmax(prediction)
+
+        whatspare = int(classes[idx])
         print("spare is:", whatspare)
         if whatspare == "empty":
             print("empty") # GUI로 보내기
@@ -72,7 +82,6 @@ def main():
     try:
         while True:
             keyValue = cv2.waitKey(1)
-
             if keyValue == ord('q'):
                 break
             elif keyValue == 82:
@@ -104,16 +113,16 @@ def main():
                     print("left")
                     move.move(50, 'forward', 'left', 0.6)
                 if carState == "capture_stop":
+                    move.motorStop()
+                    time.sleep(1)
                     spare_capture()
+                    time.sleep(1)
+                    continue
+                if carState == "stop":
+                    move.motorStop()
                     break
-
-            elif carState == "stop":
+            if carState == "stop":
                 move.motorStop()
-            elif carState == "capture_stop":
-                move.motorStop()
-                time.sleep(1)
-                spare_capture()
-                time.sleep(1)
                 ##### 여기서 다시 carstate = go 로 반환하는구문 추가
 
     except KeyboardInterrupt:

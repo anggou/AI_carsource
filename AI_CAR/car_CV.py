@@ -36,33 +36,30 @@ def spare_capture():
     whatspare = "None"
 
     try:
-        while True:
-            keyValue = cv2.waitKey(1) #키보드 입력대기
-
-            _, image = camera.read() #_은 읽기 성공여부, true or false
-            image = cv2.flip(image, -1) # 양수 = 좌우대칭, 0 = 상하대칭 , 음수 = 모두수행
-            preprocessed = img_preprocess(image)
-            cv2.imshow('pre', preprocessed) # 'pre' = 창제목 으로 창 띄워 보여주기
-            X = np.asarray([preprocessed])
-            whatspare = int(model.predict(X)[0])
-            print("spare is:", whatspare)
-
-            if whatspare == "empty":
-                print("empty") # GUI로 보내기
-            elif whatspare == "nozzle_1":
-                print("Nozzle 1pcs")  # GUI로 보내기
-            elif whatspare == "nozzle_2":
-                print("Nozzle 2pcs") # GUI로 보내기
-            elif whatspare == "nozzle_3":
-                print("Nozzle 3pcs") # GUI로 보내기
-            elif whatspare == "pump_1":
-                print("Pump 1pcs") # GUI로 보내기
-            elif whatspare == "pump_2":
-                print("Pump 2pcs") # GUI로 보내기
-            elif whatspare == "pump_3":
-                print("Pump 3pcs") # GUI로 보내기
-            else :
-                print("unknown")
+        # keyValue = cv2.waitKey(1) #키보드 입력대기
+        _, image = camera.read() #_은 읽기 성공여부, true or false
+        image = cv2.flip(image, -1) # 양수 = 좌우대칭, 0 = 상하대칭 , 음수 = 모두수행
+        preprocessed = img_preprocess(image)
+        cv2.imshow('pre', preprocessed) # 'pre' = 창제목 으로 창 띄워 보여주기
+        X = np.asarray([preprocessed])
+        whatspare = int(model.predict(X)[0])
+        print("spare is:", whatspare)
+        if whatspare == "empty":
+            print("empty") # GUI로 보내기
+        elif whatspare == "nozzle_1":
+            print("Nozzle 1pcs")  # GUI로 보내기
+        elif whatspare == "nozzle_2":
+            print("Nozzle 2pcs") # GUI로 보내기
+        elif whatspare == "nozzle_3":
+            print("Nozzle 3pcs") # GUI로 보내기
+        elif whatspare == "pump_1":
+            print("Pump 1pcs") # GUI로 보내기
+        elif whatspare == "pump_2":
+            print("Pump 2pcs") # GUI로 보내기
+        elif whatspare == "pump_3":
+            print("Pump 3pcs") # GUI로 보내기
+        else :
+            print("unknown")
 
     except KeyboardInterrupt:
         pass
@@ -96,7 +93,7 @@ def main():
             steering_angle = int(model.predict(X)[0])
             print("predict angle:", steering_angle)
 
-            if carState == "go":
+            while carState == "go":
                 if steering_angle >= 70 and steering_angle <= 110:
                     print("go")
                     move.move(50, 'forward', 'no', 1)
@@ -106,6 +103,10 @@ def main():
                 elif steering_angle < 71:
                     print("left")
                     move.move(50, 'forward', 'left', 0.6)
+                if carState == "capture_stop":
+                    spare_capture()
+                    break
+
             elif carState == "stop":
                 move.motorStop()
             elif carState == "capture_stop":

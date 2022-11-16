@@ -9,6 +9,7 @@ def main():
     filepath = "/home/pi/AI_CAR/video/train"
     i = 0
     carState = "stop"
+
     while( camera.isOpened() ):
         
         keyValue = cv2.waitKey(10)
@@ -49,7 +50,7 @@ def main():
             cv2.imwrite("%s_%05d_%03d.png" % (filepath, i, 90), save_image)
             i += 1
         
-    cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
     
 if __name__ == '__main__':
     main()

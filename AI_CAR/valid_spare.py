@@ -1,11 +1,9 @@
-import threading
-import time
 import cv2
 import RPi.GPIO as GPIO
 import numpy as np
-import tensorflow as tf
 from tensorflow.keras.models import load_model
-import move
+from AI_CAR import move
+
 #검은차를 직접 움직이면서, 순간순간 스페어 몇개인지 인식
 
 size = (224, 224)

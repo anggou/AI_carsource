@@ -1,11 +1,9 @@
-import threading
 import time
 import cv2
 import RPi.GPIO as GPIO
 import numpy as np
-import tensorflow as tf
 from tensorflow.keras.models import load_model
-import move
+from AI_CAR import move
 
 line_pin_right = 19
 line_pin_middle = 16

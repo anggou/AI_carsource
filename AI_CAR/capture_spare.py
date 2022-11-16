@@ -1,6 +1,5 @@
 import tensorflow.keras
-import numpy as np
-import move
+from AI_CAR import move
 import cv2
 import RPi.GPIO as GPIO
 

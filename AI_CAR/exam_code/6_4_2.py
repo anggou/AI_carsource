@@ -50,7 +50,7 @@ def main():
             cv2.imwrite("%s_%05d_%03d.png" % (filepath, i, 90), save_image)
             i += 1
         
-        cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
     
 if __name__ == '__main__':
     main()
